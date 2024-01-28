@@ -1,0 +1,83 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Flower Prediction</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='css/test.css') }}">
+</head>
+<body>
+    <div class="navbar">
+        <h1>Iris Flower Prediction</h1>
+    </div>
+
+    <div class="container">
+        <h2>Enter Iris Flower Measurements</h2>
+
+        <form id="prediction-form" method="POST" action="/index">
+            <div class="form-group">
+                <label for="sepal_length">Sepal Length:</label>
+                <input type="text" id="sepal_length" name="sepal_length" required>
+            </div>
+
+            <div class="form-group">
+                <label for="sepal_width">Sepal Width:</label>
+                <input type="text" id="sepal_width" name="sepal_width" required>
+            </div>
+
+            <div class="form-group">
+                <label for="petal_length">Petal Length:</label>
+                <input type="text" id="petal_length" name="petal_length" required>
+            </div>
+
+            <div class="form-group">
+                <label for="petal_width">Petal Width:</label>
+                <input type="text" id="petal_width" name="petal_width" required>
+            </div>
+
+            <button type="button" id="predict-button">Predict</button>
+        </form>
+
+        <div class="loader" style="display: none;">
+            Loading...
+        </div>
+
+        <div id="result" class="image-section">
+            <!-- Result will be displayed here -->
+        </div>
+
+       
+
+        <div class="container">
+            <div class="logout-button">
+                <a href="/logout">Logout</a>
+            </div>
+        </div>
+    </div>
+    
+
+    <script>
+        document.getElementById("predict-button").addEventListener("click", function () {
+            console.log("Predict button clicked");
+            var formData = new FormData(document.getElementById("prediction-form"));
+            document.querySelector('.loader').style.display = "block";
+            console.log("Before fetch");
+    
+            fetch("/predict", {
+                method: "POST",
+                body: formData
+            })
+            .then(response => response.json())
+            .then(result => {
+                console.log("Result received:", result);
+                document.getElementById("result").textContent = "Predicted Species: " + result.predicted_label;
+                document.querySelector('.loader').style.display = "none";
+            })
+            .catch(error => {
+                console.error("Fetch error:", error);
+                document.querySelector('.loader').style.display = "none";
+            });
+        });
+    </script>
+    
+</body>
+</html>
